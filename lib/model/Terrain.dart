@@ -2,18 +2,14 @@ import 'dart:math';
 import 'dart:typed_data';
 
 class Terrain {
+
   static const _neighborhood = [
-    [-1, -1],
-    [-1, 0],
-    [-1, 1],
-    [0, -1],
-    [0, 1],
-    [1, -1],
-    [1, 0],
-    [1, 1]
+    [-1, -1], [-1, 0], [-1, 1],
+    [ 0, -1],          [ 0, 1],
+    [ 1, -1], [ 1, 0], [ 1, 1]
   ];
   static const _minNeighborsBirth = 3;
-  static const _maxNeighborsBirth = 3;
+  static const _maxNeigborsBirth = 3;
   static const _minNeighborsSurvival = 2;
   static const _maxNeighborsSurvival = 3;
 
@@ -33,6 +29,8 @@ class Terrain {
   Terrain(int size, double density, Random rng) : _size = size {
     _cells = List.generate(size, (i) => Uint8ClampedList(size));
     _next = List.generate(size, (i) => Uint8ClampedList(size));
+    _population = 0;
+    _iterationCount = 0;
     for (var row in _cells) {
       for (var colIndex = 0; colIndex < row.length; colIndex++) {
         if (rng.nextDouble() < density) {
@@ -72,7 +70,7 @@ class Terrain {
     var count = 0;
     for (var offsets in _neighborhood) {
       if (_cells[(rowIndex + offsets[0]) % _size]
-              [(colIndex + offsets[1]) % _size] >
+      [(colIndex + offsets[1]) % _size] >
           0) {
         count++;
       }
@@ -84,7 +82,7 @@ class Terrain {
     int next;
     if (age == 0) {
       next = (numNeighbors >= _minNeighborsBirth &&
-              numNeighbors <= _maxNeighborsBirth)
+          numNeighbors <= _maxNeigborsBirth)
           ? 1
           : 0;
     } else if (numNeighbors >= _minNeighborsSurvival &&
@@ -95,4 +93,5 @@ class Terrain {
     }
     return next;
   }
+
 }
